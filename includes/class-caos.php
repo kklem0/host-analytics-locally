@@ -87,6 +87,7 @@ class CAOS
         define('CAOS_OPT_COMPATIBILITY_MODE', esc_attr(get_option(CAOS_Admin_Settings::CAOS_ADV_SETTING_COMPATIBILITY_MODE)) ?: '');
         define('CAOS_OPT_SESSION_EXPIRY_DAYS', esc_attr(get_option(CAOS_Admin_Settings::CAOS_ADV_SETTING_GA_SESSION_EXPIRY_DAYS, 30)));
         define('CAOS_OPT_SITE_SPEED_SAMPLE_RATE', esc_attr(get_option(CAOS_Admin_Settings::CAOS_ADV_SETTING_SITE_SPEED_SAMPLE_RATE, 1)));
+        define('CAOS_OPT_ENQUEUE_ORDER', esc_attr(get_option(CAOS_Admin_Settings::CAOS_ADV_SETTING_ENQUEUE_ORDER)) ?: 10);
         define('CAOS_OPT_ANONYMIZE_IP_MODE', esc_attr(get_option(CAOS_Admin_Settings::CAOS_BASIC_SETTING_ANONYMIZE_IP_MODE, '')));
         define('CAOS_OPT_TRACK_ADMIN', esc_attr(get_option(CAOS_Admin_Settings::CAOS_BASIC_SETTING_TRACK_ADMIN)));
         define('CAOS_OPT_DISABLE_ADS_FEAT', esc_attr(get_option(CAOS_Admin_Settings::CAOS_ADV_SETTING_DISABLE_ADS_FEATURES)));
@@ -238,7 +239,7 @@ class CAOS
     }
 
     /**
-     * Modify behavior of CAOS' AJAX hooks.
+     * Modify behavior of OMGF's AJAX hooks.
      * 
      * @return void 
      */
@@ -256,31 +257,19 @@ class CAOS
     }
 
     /**
-     * @since v4.4.6 Write this class to a global variable to allow usage by 3rd parties.
-     * 
      * @return CAOS_Frontend_Functions
      */
     private function do_frontend()
     {
-        global $caos_frontend;
-
-        $caos_frontend = new CAOS_Frontend_Functions();
-
-        return $caos_frontend;
+        return new CAOS_Frontend_Functions();
     }
 
     /**
-     * @since v4.4.6 Write this class to a global variable to allow usage by 3rd parties.
-     * 
      * @return CAOS_Frontend_Tracking
      */
     private function do_tracking_code()
     {
-        global $caos_frontend_tracking;
-
-        $caos_frontend_tracking = new CAOS_Frontend_Tracking();
-
-        return $caos_frontend_tracking;
+        return new CAOS_Frontend_Tracking();
     }
 
     /**
@@ -290,6 +279,10 @@ class CAOS
      */
     public function trigger_cron_script()
     {
+        if (self::uses_minimal_analytics()) {
+            return;
+        }
+
         return new CAOS_Cron();
     }
 
@@ -505,15 +498,5 @@ class CAOS
     public static function dual_tracking_is_enabled()
     {
         return strpos(CAOS_OPT_TRACKING_ID, 'UA-') === 0 && CAOS_OPT_DUAL_TRACKING == 'on';
-    }
-
-    /**
-     * Global method to check if CAOS is set to use GA4.
-     * 
-     * @return bool 
-     */
-    public static function uses_ga4()
-    {
-        return strpos(CAOS_OPT_TRACKING_ID, 'G') === 0 && CAOS_OPT_REMOTE_JS_FILE == 'gtag-v4.js';
     }
 }

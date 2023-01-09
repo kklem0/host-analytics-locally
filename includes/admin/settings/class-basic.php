@@ -42,13 +42,10 @@ class CAOS_Admin_Settings_Basic extends CAOS_Admin_Settings_Builder
         add_filter('caos_basic_settings_content', [$this, 'do_ga4_measurement_id'], 36);
         add_filter('caos_basic_settings_content', [$this, 'do_tbody_close'], 40);
 
-        add_filter('caos_basic_settings_content', function () {
-            $this->do_invisible_option_notice();
-        }, 41);
+        add_filter('caos_basic_settings_content', [$this, 'do_invisible_option_notice'], 41);
 
         // Non-compatibility mode settings
         add_filter('caos_basic_settings_content', [$this, 'do_tbody_basic_settings_open'], 50);
-        add_filter('caos_basic_settings_content', [$this, 'do_gdpr_compliance_promo'], 51);
         add_filter('caos_basic_settings_content', [$this, 'do_allow_tracking'], 52);
         add_filter('caos_basic_settings_content', [$this, 'do_cookie_name'], 54);
         add_filter('caos_basic_settings_content', [$this, 'do_cookie_value'], 56);
@@ -187,22 +184,7 @@ class CAOS_Admin_Settings_Basic extends CAOS_Admin_Settings_Builder
      */
     public function do_tbody_basic_settings_open()
     {
-        $this->do_tbody_open('caos_basic_settings google_analytics_options', (CAOS_OPT_SERVICE_PROVIDER == 'google_analytics' && !CAOS_OPT_COMPATIBILITY_MODE) || CAOS_OPT_SERVICE_PROVIDER == 'plausible');
-    }
-
-    /**
-     * GDPR Compliance
-     */
-    public function do_gdpr_compliance_promo()
-    {
-        $this->do_checkbox(
-            __('Increase GDPR Compliance (Pro)', $this->plugin_text_domain),
-            'caos_pro_gdpr',
-            defined('CAOS_PRO_GDPR') ? CAOS_PRO_GDPR : false,
-            sprintf(__('Remove any data that can be used to identify a person (i.e. personal data, e.g. IP address, User Agent, Location, etc.) to use Google Analytics in compliance with the GDPR. Be warned that enabling this setting <u>doesn\'t</u> guarantee GDPR compliance of your site, e.g. any parameters that enable (internal) routing (e.g. UTM tags) must be removed from your site\'s URL as well. <A href="%s" target="_blank">Read more</a>', $this->plugin_text_domain), 'https://www.cnil.fr/en/google-analytics-and-data-transfers-how-make-your-analytics-tool-compliant-gdpr') . ' ' . $this->promo,
-            !defined('CAOS_PRO_GDPR'),
-            CAOS_OPT_SERVICE_PROVIDER == 'google_analytics'
-        );
+        $this->do_tbody_open('caos_basic_settings google_analytics_options', CAOS_OPT_SERVICE_PROVIDER == 'google_analytics' && empty(CAOS_OPT_COMPATIBILITY_MODE));
     }
 
     /**
@@ -278,7 +260,7 @@ class CAOS_Admin_Settings_Basic extends CAOS_Admin_Settings_Builder
             CAOS_Admin_Settings::CAOS_BASIC_SETTING_ANONYMIZE_IP_MODE,
             $aip_mode,
             sprintf(__('Enables the <code>aip</code> parameter, provided by Google. <strong>Important:</strong> Due to <a href="%s">recent rulings</a>, anonymizing the last octet of the IP address is no longer sufficient according to the GDPR. If you have IP anonymization set to \'off\' or \'one\', your website will not comply with GDPR as personal data might still be stored on Google\'s servers. Combining the option \'two\' with <a href="%s">Stealth Mode</a> will properly anonymize IP addresses before sending the data over to Google, however location data might be inaccurate.', $this->plugin_text_domain), CAOS_SITE_URL . '/gdpr/google-analytics-illegal-austria/' . $this->utm_tags, admin_url('options-general.php?page=host_analyticsjs_local&tab=caos-extensions-settings')) . sprintf(' <span class="caos-aip">Example: <span class="caos-aip-example">192.168.<span class="third-octet">%s</span>.<span class="fourth-octet">%s</span></span></span> ', $third_octet, $fourth_octet) . $this->promo,
-            [false, false, !defined('CAOS_PRO_ANONYMIZE_IP_TWO')]
+            [false, false, true]
         );
     }
 
@@ -336,7 +318,7 @@ class CAOS_Admin_Settings_Basic extends CAOS_Admin_Settings_Builder
      */
     public function do_tbody_basic_settings_plausible_open()
     {
-        $this->do_tbody_open('caos_basic_settings', (CAOS_OPT_SERVICE_PROVIDER == 'google_analytics' && !CAOS_OPT_COMPATIBILITY_MODE) || CAOS_OPT_SERVICE_PROVIDER == 'plausible');
+        $this->do_tbody_open('caos_basic_settings', (CAOS_OPT_SERVICE_PROVIDER == 'google_analytics' && empty(CAOS_OPT_COMPATIBILITY_MODE)) || CAOS_OPT_SERVICE_PROVIDER == 'plausible');
     }
 
     /**

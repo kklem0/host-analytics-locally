@@ -238,21 +238,13 @@ class CAOS_Admin_Settings extends CAOS_Admin
     }
 
     /**
-     * Format timestamp of remote JS files' alias last updated time.
-     * 
-     * @since v4.4.6 Explicity check if file exists.
+     * Format timestamp of analytics.js last updated.
      *
      * @return string
      */
     private function file_last_updated()
     {
-        $file_alias_path = CAOS::get_file_alias_path(str_replace('.js', '', CAOS_OPT_REMOTE_JS_FILE));
-
-        if (!file_exists($file_alias_path)) {
-            return '';
-        }
-
-        $file_mod_time = filemtime($file_alias_path);
+        $file_mod_time = filemtime(CAOS::get_file_alias_path(str_replace('.js', '', CAOS_OPT_REMOTE_JS_FILE)));
 
         return $this->format_time_by_locale($file_mod_time, get_locale());
     }
@@ -449,7 +441,7 @@ class CAOS_Admin_Settings extends CAOS_Admin
     }
 
     /**
-     * All logic to generate the news reel in the bottom right of the footer on all of CAOS' settings pages.
+     * All logic to generate the news reel in the bottom right of the footer on all of OMGF's settings pages.
      * 
      * Includes multiple checks to make sure the reel is only shown if a recent post is available.
      * 
