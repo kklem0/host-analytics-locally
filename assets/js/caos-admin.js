@@ -20,12 +20,6 @@ jQuery(document).ready(function ($) {
             // Buttons
             $('#caos-regenerate-alias').on('click', this.regenerate_alias);
 
-            // Text Fields
-            $('.sgal-tracking-id').on('input', this.toggle_dual_tracking_visibility);
-
-            // Checkboxes
-            $('.caos-dual-tracking',).on('change', this.toggle_ga4_measurement_id);
-
             // Radio's
             $('input[class^="caos-service-provider"]').on('click', this.toggle_service_provider);
             $('input[class^="caos-allow-tracking"]').on('click', this.toggle_allow_tracking);
@@ -51,40 +45,6 @@ jQuery(document).ready(function ($) {
                     $('#submit').click();
                 }
             });
-        },
-
-        /**
-         * 
-         */
-        toggle_dual_tracking_visibility: function () {
-            current_value = this.value;
-            $option = $('.caos-dual-tracking');
-            $option_row = $('.caos-dual-tracking-row');
-            $2nd_option_row = $('.caos-ga4-measurement-id-row');
-
-            if (current_value.startsWith('UA-')) {
-                $option_row.show();
-
-                if ($option.is(':checked')) {
-                    $2nd_option_row.show();
-                }
-            } else {
-                $option_row.hide();
-                $2nd_option_row.hide();
-            }
-        },
-
-        /**
-         * 
-         */
-        toggle_ga4_measurement_id: function () {
-            $option = $('.caos-ga4-measurement-id-row');
-
-            if (this.checked) {
-                $option.show();
-            } else {
-                $option.hide();
-            }
         },
 
         /**
