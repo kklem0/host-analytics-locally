@@ -138,7 +138,7 @@ class CAOS_Cron
         /**
          * Gtag V3 is a wrapper for analytics.js, so add it to the queue.
          */
-        if ($key == 'analytics' || $key == 'gtag') {
+        if ($key == 'analytics' || $key == 'gtag' || !empty(CAOS_OPT_COMPATIBILITY_MODE)) {
             $queue = array_merge($queue, [
                 'analytics' => [
                     'remote' => CAOS_GA_URL . '/analytics.js',
@@ -150,7 +150,7 @@ class CAOS_Cron
         /**
          * Gtag V3
          */
-        if ($key == 'gtag') {
+        if ($key == 'gtag' || !empty(CAOS_OPT_COMPATIBILITY_MODE)) {
             $queue = array_merge($queue, [
                 $key => [
                     'remote' => CAOS_GTM_URL . '/' . 'gtag/js?id=' . CAOS_OPT_TRACKING_ID,
@@ -162,7 +162,7 @@ class CAOS_Cron
         /**
          * If Dual Tracking is enabled, then add Gtag V4 to the download queue.
          */
-        if (CAOS_OPT_DUAL_TRACKING == 'on' || $key == 'gtag-v4') {
+        if (CAOS_OPT_DUAL_TRACKING == 'on' || $key == 'gtag-v4' || !empty(CAOS_OPT_COMPATIBILITY_MODE)) {
             $tracking_id = CAOS_OPT_DUAL_TRACKING == 'on' ? CAOS_OPT_GA4_MEASUREMENT_ID : CAOS_OPT_TRACKING_ID;
 
             $queue = array_merge($queue, [
