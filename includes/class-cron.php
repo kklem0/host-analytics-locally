@@ -204,13 +204,8 @@ class CAOS_Cron
                 $home_url   = str_replace(['https:', 'http:'], '', content_url(CAOS_OPT_CACHE_DIR));
                 $hit_type   = apply_filters('caos_gtag_hit_type', '"pageview"');
                 $file_alias = CAOS_OPT_DUAL_TRACKING == 'on' ? CAOS::get_file_alias('gtag-v4') : CAOS::get_file_alias($file);
-                $finds      = [$ext_ga_url, '/gtag/js?id=', '"//www.googletagmanager.com"', "\"pageview\""];
-                $replaces   = [$local_ga_url, $file_alias . '?id=', "\"$home_url\"", $hit_type];
-
-                if (CAOS::dual_tracking_is_enabled()) {
-                    array_push($finds, 'https://www.googletagmanager.com/gtag/js?id=', 'www.googletagmanager.com', '/gtag/js');
-                    array_push($replaces, CAOS::get_local_file_url() . '?id=', trim($home_url, '/'), '/' . $file_alias);
-                }
+                $finds      = [$ext_ga_url, '/gtag/js?id=', '"//www.googletagmanager.com"', "\"pageview\"", 'https://www.googletagmanager.com/gtag/js?id=', 'www.googletagmanager.com', '/gtag/js'];
+                $replaces   = [$local_ga_url, $file_alias . '?id=', "\"$home_url\"", $hit_type, CAOS::get_local_file_url() . '?id=', trim($home_url, '/'), '/' . $file_alias];
 
                 CAOS::find_replace_in($downloaded_file, $finds, $replaces);
 
