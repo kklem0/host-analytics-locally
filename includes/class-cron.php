@@ -152,9 +152,9 @@ class CAOS_Cron
          */
         if ($key == 'gtag' || !empty(CAOS_OPT_COMPATIBILITY_MODE)) {
             $queue = array_merge($queue, [
-                $key => [
+                'gtag' => [
                     'remote' => CAOS_GTM_URL . '/' . 'gtag/js?id=' . CAOS_OPT_TRACKING_ID,
-                    'local'  => CAOS::get_file_alias_path($key)
+                    'local'  => CAOS::get_file_alias_path('gtag')
                 ]
             ]);
         }
@@ -163,7 +163,7 @@ class CAOS_Cron
          * If Dual Tracking is enabled, then add Gtag V4 to the download queue.
          */
         if (CAOS_OPT_DUAL_TRACKING == 'on' || $key == 'gtag-v4' || !empty(CAOS_OPT_COMPATIBILITY_MODE)) {
-            $tracking_id = CAOS_OPT_DUAL_TRACKING == 'on' ? CAOS_OPT_GA4_MEASUREMENT_ID : CAOS_OPT_TRACKING_ID;
+            $tracking_id = (CAOS_OPT_DUAL_TRACKING == 'on' || !empty(CAOS_OPT_COMPATIBILITY_MODE)) ? CAOS_OPT_GA4_MEASUREMENT_ID : CAOS_OPT_TRACKING_ID;
 
             $queue = array_merge($queue, [
                 'gtag-v4' => [
@@ -172,7 +172,6 @@ class CAOS_Cron
                 ]
             ]);
         }
-
         return $queue;
     }
 
